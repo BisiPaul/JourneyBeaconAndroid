@@ -6,37 +6,31 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import com.fluffydevs.journeybeacon.R
+import com.fluffydevs.journeybeacon.common.structure.BaseFragment
 import com.fluffydevs.journeybeacon.databinding.FragmentProfileBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : BaseFragment<ProfileViewModel, FragmentProfileBinding>() {
 
-    private var _binding: FragmentProfileBinding? = null
+    override val layoutId: Int = R.layout.fragment_profile
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    override val viewModel by viewModels<ProfileViewModel>()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val profileViewModel =
-            ViewModelProvider(this).get(ProfileViewModel::class.java)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        _binding = FragmentProfileBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-
-        val textView: TextView = binding.textProfile
-        profileViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
-        return root
+        setControls()
+        observe()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun setControls() {
+
+    }
+
+    private fun observe() = with(viewModel) {
+
     }
 }
