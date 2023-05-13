@@ -1,5 +1,7 @@
 package com.fluffydevs.journeybeacon.presentation.main
 
+import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
@@ -10,19 +12,28 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.fluffydevs.journeybeacon.R
+import com.fluffydevs.journeybeacon.common.managers.BluetoothManager
+import com.fluffydevs.journeybeacon.common.managers.PermissionsManager
 import com.fluffydevs.journeybeacon.common.structure.BaseFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
+import org.altbeacon.beacon.BeaconManager
+import org.altbeacon.beacon.MonitorNotifier
+import org.altbeacon.beacon.Region
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MonitorNotifier {
 
     val viewModel by viewModels<MainViewModel>()
 
     lateinit var googleSignInClient: GoogleSignInClient
+
+    private lateinit var permissionsManager: PermissionsManager
+
+    private lateinit var bluetoothManager: BluetoothManager
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -46,6 +57,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         this.onBackPressedDispatcher.addCallback(onBackPressedCallback)
+
+        permissionsManager = PermissionsManager(this)
+        bluetoothManager = BluetoothManager(this)
 
         setContentView(R.layout.activity_main)
 
@@ -116,5 +130,36 @@ class MainActivity : AppCompatActivity() {
             .addOnCompleteListener(this) {
                 viewModel.onSignOut()
             }
+    }
+
+    fun requestStartingPermissions() {
+        permissionsManager.requestPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            permissionsManager.requestPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+        }
+    }
+
+    fun verifyBluetooth() {
+        bluetoothManager.verifyBluetooth()
+    }
+
+    fun startMonitoringBeacons() {
+        BeaconManager.getInstanceForApplication(this).addMonitorNotifier(this);
+    }
+
+    companion object {
+        private const val TAG = "MainActivity"
+    }
+
+    override fun didEnterRegion(region: Region?) {
+        // TODO @Paul
+    }
+
+    override fun didExitRegion(region: Region?) {
+        // TODO @Paul
+    }
+
+    override fun didDetermineStateForRegion(state: Int, region: Region?) {
+        // TODO @Paul
     }
 }

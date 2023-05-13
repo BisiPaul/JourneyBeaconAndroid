@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.fluffydevs.journeybeacon.R
 import com.fluffydevs.journeybeacon.common.structure.BaseFragment
 import com.fluffydevs.journeybeacon.databinding.FragmentHomeBinding
+import com.fluffydevs.journeybeacon.presentation.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,6 +26,11 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
 
         setControls()
         observe()
+        (activity as MainActivity).apply {
+            requestStartingPermissions()
+            verifyBluetooth()
+            startMonitoringBeacons()
+        }
     }
 
     private fun setControls() {

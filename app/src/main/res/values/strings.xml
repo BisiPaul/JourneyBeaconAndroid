@@ -5,5 +5,14 @@
     <string name="title_profile">Profile</string>
     <string name="title_splash">Splash</string>
     <string name="title_login">Login</string>
+    <string name="ok">OK</string>
 
+    // PERMISSIONS
+    <string name="permission_ok">OK</string>
+    <string name="permission_cancel">Cancel</string>
+
+    <string name="permission_access_fine_location_rationale">Please grant location access so this app can detect beacons.</string>
+    <string name="permission_access_fine_location_denied">Since location access has not been granted, this app will not be able to discover beacons.  Please go to Settings -> Applications -> Permissions and grant location access to this app.</string>
+    <string name="permission_access_background_location_rationale">Please grant background location access so this app can detect beacons in the background.</string>
+    <string name="permission_access_background_location_denied">Since background location access has not been granted, this app will not be able to discover beacons in the background.  Please go to Settings -> Applications -> Permissions and grant background location access to this app.</string>
 </resources>

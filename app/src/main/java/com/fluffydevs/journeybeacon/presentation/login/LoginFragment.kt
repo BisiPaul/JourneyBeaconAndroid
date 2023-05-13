@@ -6,7 +6,7 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.fluffydevs.journeybeacon.R
-import com.fluffydevs.journeybeacon.common.Constants.RequestCodes.RC_SIGN_IN
+import com.fluffydevs.journeybeacon.common.RequestCodes.RC_SIGN_IN
 import com.fluffydevs.journeybeacon.common.structure.BaseFragment
 import com.fluffydevs.journeybeacon.common.structure.EventObserver
 import com.fluffydevs.journeybeacon.databinding.FragmentLoginBinding
