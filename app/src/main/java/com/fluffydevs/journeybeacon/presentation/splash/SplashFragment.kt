@@ -9,7 +9,9 @@ import com.fluffydevs.journeybeacon.common.structure.BaseFragment
 import com.fluffydevs.journeybeacon.common.structure.EventObserver
 import com.fluffydevs.journeybeacon.databinding.FragmentSplashBinding
 import com.fluffydevs.journeybeacon.presentation.main.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SplashFragment : BaseFragment<SplashViewModel, FragmentSplashBinding>() {
 
     override val layoutId = R.layout.fragment_splash

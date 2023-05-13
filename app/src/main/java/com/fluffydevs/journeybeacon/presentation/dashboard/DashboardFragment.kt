@@ -14,6 +14,7 @@ import com.fluffydevs.journeybeacon.common.structure.EventObserver
 import com.fluffydevs.journeybeacon.databinding.FragmentDashboardBinding
 import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class DashboardFragment : BaseFragment<DashboardViewModel, FragmentDashboardBinding>() {
 
     override val layoutId: Int = R.layout.fragment_dashboard
