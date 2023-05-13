@@ -22,6 +22,8 @@ abstract class BaseFragment<VM : BaseViewModel, B : ViewDataBinding> : Fragment(
 
     open fun allowBackButton() = true
 
+    open fun allowBottomNavigation() = true
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
