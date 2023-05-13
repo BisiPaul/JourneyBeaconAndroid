@@ -9,12 +9,20 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor() : BaseViewModel() {
-    private var _navigateToHome = MutableLiveData<Event<Unit>>()
-    val navigateToHome: LiveData<Event<Unit>>
-        get() = _navigateToHome
+    private var _loginSuccess = MutableLiveData<Event<Unit>>()
+    val loginSuccess: LiveData<Event<Unit>>
+        get() = _loginSuccess
 
-    fun login() {
-        // TODO @Paul: do the login and navigate to Home
-        _navigateToHome.value = Event(Unit)
+    private var _loginFailure = MutableLiveData<Event<Unit>>()
+    val loginFailure: LiveData<Event<Unit>>
+        get() = _loginFailure
+
+
+    fun onLoginSuccess() {
+        _loginSuccess.value = Event(Unit)
+    }
+
+    fun onLoginFailure() {
+        _loginFailure.value = Event(Unit)
     }
 }

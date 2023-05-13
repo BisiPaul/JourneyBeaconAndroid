@@ -1,17 +1,14 @@
 package com.fluffydevs.journeybeacon.presentation.profile
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.fluffydevs.journeybeacon.R
 import com.fluffydevs.journeybeacon.common.structure.BaseFragment
+import com.fluffydevs.journeybeacon.common.structure.EventObserver
 import com.fluffydevs.journeybeacon.databinding.FragmentProfileBinding
-import dagger.hilt.android.AndroidEntryPoint
+import com.fluffydevs.journeybeacon.presentation.main.MainActivity
 
 class ProfileFragment : BaseFragment<ProfileViewModel, FragmentProfileBinding>() {
 
@@ -22,15 +19,30 @@ class ProfileFragment : BaseFragment<ProfileViewModel, FragmentProfileBinding>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setup()
         setControls()
         observe()
+        observeMainViewModel()
+    }
+
+    private fun setup() {
+        binding.welcomeName.text = (activity as MainActivity).viewModel.account.displayName
     }
 
     private fun setControls() {
-
+        binding.signOutButton.setOnClickListener {
+            (activity as MainActivity).signOut()
+        }
     }
 
     private fun observe() = with(viewModel) {
 
+    }
+
+    private fun observeMainViewModel() = with((activity as MainActivity).viewModel) {
+        signOutCompleted.observe(viewLifecycleOwner, EventObserver {
+//            findNavController().popBackStack(R.id.navigation_login, false);
+            findNavController().navigate(R.id.action_profileFragment_toLoginFragment)
+        })
     }
 }

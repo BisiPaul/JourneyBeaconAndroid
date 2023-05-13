@@ -8,6 +8,7 @@ import com.fluffydevs.journeybeacon.R
 import com.fluffydevs.journeybeacon.common.structure.BaseFragment
 import com.fluffydevs.journeybeacon.common.structure.EventObserver
 import com.fluffydevs.journeybeacon.databinding.FragmentSplashBinding
+import com.fluffydevs.journeybeacon.presentation.main.MainActivity
 
 class SplashFragment : BaseFragment<SplashViewModel, FragmentSplashBinding>() {
 
@@ -20,6 +21,7 @@ class SplashFragment : BaseFragment<SplashViewModel, FragmentSplashBinding>() {
 
         setControls()
         observe()
+        observeMainViewModel()
     }
 
     private fun setControls() {
@@ -27,7 +29,15 @@ class SplashFragment : BaseFragment<SplashViewModel, FragmentSplashBinding>() {
     }
 
     private fun observe() = with(viewModel) {
-        navigateToLogin.observe(viewLifecycleOwner, EventObserver {
+
+    }
+
+    private fun observeMainViewModel() = with((activity as MainActivity).viewModel) {
+        userAlreadySignedIn.observe(viewLifecycleOwner, EventObserver {
+            findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
+        })
+
+        newUser.observe(viewLifecycleOwner, EventObserver {
             findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
         })
     }
