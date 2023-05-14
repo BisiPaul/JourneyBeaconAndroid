@@ -15,4 +15,7 @@
     <string name="permission_access_fine_location_denied">Since location access has not been granted, this app will not be able to discover beacons.  Please go to Settings -> Applications -> Permissions and grant location access to this app.</string>
     <string name="permission_access_background_location_rationale">Please grant background location access so this app can detect beacons in the background.</string>
     <string name="permission_access_background_location_denied">Since background location access has not been granted, this app will not be able to discover beacons in the background.  Please go to Settings -> Applications -> Permissions and grant background location access to this app.</string>
+    <string name="permission_bluetooth_scan_rationale">Please grant bluetooth scan permission so this app can detect beacons.</string>
+    <string name="permission_bluetooth_scan_denied">Since bluetooth scan has not been granted, this app will not be able to discover beacons.  Please go to Settings -> Applications -> Permissions and grant it to this app.</string>
+
 </resources>

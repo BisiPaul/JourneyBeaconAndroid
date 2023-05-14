@@ -62,14 +62,38 @@ class PermissionsManager(
         )
     }
 
+    private val requestBluetoothScanPermission =
+        activity.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                // ALL GOOD
+                if (isPermissionGranted(Manifest.permission.BLUETOOTH_SCAN) == false) {
+                    // False Positive
+                    showBluetoothScanDialog()
+                }
+            } else {
+                showBluetoothScanDialog()
+            }
+        }
+
+    private fun showBluetoothScanDialog() {
+        showPermissionRationaleDialog(
+            rationaleResId = R.string.permission_access_background_location_rationale,
+            intentAction = Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            permissionRequestCode = RequestCodes.BLUETOOTH_SCAN,
+            snackbarTextResId = R.string.permission_access_background_location_denied
+        )
+    }
+
     private fun isPermissionGranted(permission: String): Boolean? {
         return when (permission) {
             Manifest.permission.ACCESS_FINE_LOCATION -> {
                 activity.isAccessFineLocationGranted()
             }
+
             Manifest.permission.ACCESS_BACKGROUND_LOCATION -> {
                 activity.isAccessBackgroundLocationGranted()
             }
+
             else -> null
         }
     }
@@ -80,10 +104,18 @@ class PermissionsManager(
                 if (isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION) == false)
                     requestAccessFineLocationPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
             }
+
             Manifest.permission.ACCESS_BACKGROUND_LOCATION -> {
                 if (isPermissionGranted(Manifest.permission.ACCESS_BACKGROUND_LOCATION) == false)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         requestAccessBackgroundLocationPermission.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                    }
+            }
+
+            Manifest.permission.BLUETOOTH_SCAN -> {
+                if (isPermissionGranted(Manifest.permission.BLUETOOTH_SCAN) == false)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        requestBluetoothScanPermission.launch(Manifest.permission.BLUETOOTH_SCAN)
                     }
             }
         }
@@ -111,7 +143,7 @@ class PermissionsManager(
                         permissionRequestCode,
                         null
                     )
-                } catch(exception: Exception) {
+                } catch (exception: Exception) {
                     exception.printStackTrace()
                 } finally {
                     val intent = Intent(intentAction)

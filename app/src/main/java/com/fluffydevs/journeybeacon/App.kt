@@ -1,6 +1,7 @@
 package com.fluffydevs.journeybeacon
 
 import android.app.Application
+import android.os.Parcel
 import com.fluffydevs.journeybeacon.domain.service.NotificationCreator
 import dagger.hilt.android.HiltAndroidApp
 import org.altbeacon.beacon.BeaconManager
@@ -11,8 +12,10 @@ import timber.log.Timber
 
 @HiltAndroidApp
 class App : Application(), MonitorNotifier {
+    // Region to detect all the AltBeacons
     val wildcardRegion = Region("wildcardRegion", null, null, null)
-    var insideRegion = false
+    var insideRegionBack = false
+    var insideRegionFront = false
 
     lateinit var beaconManager: BeaconManager
 
@@ -55,20 +58,33 @@ class App : Application(), MonitorNotifier {
             beaconManager.stopMonitoring(region)
         }
 
-        beaconManager.startMonitoring(wildcardRegion)
+        val backRegion = Region("0x01020304050607080910111213141516", BLUETOOTH_ADDRESS_BACK)
+        val frontRegion = Region("0x01020304050607080910111213141517", BLUETOOTH_ADDRESS_FRONT)
+        beaconManager.startMonitoring(backRegion)
+        beaconManager.startMonitoring(frontRegion)
     }
 
     override fun didEnterRegion(region: Region?) {
         Timber.d("did enter region.")
-        insideRegion = true
+        when (region?.bluetoothAddress) {
+            BLUETOOTH_ADDRESS_BACK -> { insideRegionBack = true }
+            BLUETOOTH_ADDRESS_FRONT -> { insideRegionFront = true }
+        }
         // Send a notification to the user whenever a Beacon
         // matching a Region (defined above) are first seen.
         Timber.d("Sending notification.")
    }
 
     override fun didExitRegion(region: Region?) {
-        insideRegion = false
+        when (region?.bluetoothAddress) {
+            BLUETOOTH_ADDRESS_BACK -> { insideRegionBack = false }
+            BLUETOOTH_ADDRESS_FRONT -> { insideRegionFront = false }
+        }
         // do nothing here. logging happens in MonitoringActivity
+    }
+
+    fun handleInsideRegion() : Boolean {
+        return insideRegionBack || insideRegionFront
     }
 
     override fun didDetermineStateForRegion(state: Int, region: Region?) {
@@ -77,5 +93,8 @@ class App : Application(), MonitorNotifier {
 
     companion object {
         private const val TAG = "JourneyBeaconApp"
+
+        private const val BLUETOOTH_ADDRESS_BACK = "B8:27:EB:E4:A5:E4"
+        private const val BLUETOOTH_ADDRESS_FRONT = "DC:A6:32:F0:5E:54"
     }
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.fluffydevs.journeybeacon.common.structure.BaseViewModel
 import com.fluffydevs.journeybeacon.common.structure.Event
+import com.fluffydevs.journeybeacon.data.login.LoginRequestBody
 import com.fluffydevs.journeybeacon.domain.api.ServiceApi
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,6 +30,14 @@ class MainViewModel @Inject constructor(
     val signOutCompleted: LiveData<Event<Unit>>
         get() = _signOutCompleted
 
+    private var _hasEnteredRegion = MutableLiveData<Event<Unit>>()
+    val hasEnteredRegion: LiveData<Event<Unit>>
+        get() = _hasEnteredRegion
+
+    private var _hasExitedRegion = MutableLiveData<Event<Unit>>()
+    val hasExitedRegion: LiveData<Event<Unit>>
+        get() = _hasExitedRegion
+
     fun onNewUser() {
         _newUser.value = Event(Unit)
     }
@@ -38,8 +47,19 @@ class MainViewModel @Inject constructor(
         _userAlreadySignedIn.value = Event(Unit)
         viewModelScope.launch {
             // TODO @Paul: add request body
-            serviceApi.login()
+            loginBackend()
         }
+    }
+
+    private suspend fun loginBackend() {
+        serviceApi.login(
+            LoginRequestBody(
+                email = account.email ?: "",
+                userId = account.id ?: "",
+                idToken = account.idToken ?: "",
+                displayName = account.displayName ?: ""
+            )
+        )
     }
 
     fun onSignOut() {
@@ -48,5 +68,13 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             serviceApi.logout()
         }
+    }
+
+    fun onRegionEnter() {
+        _hasEnteredRegion.value = Event(Unit)
+    }
+
+    fun onRegionExit() {
+        _hasExitedRegion.value = Event(Unit)
     }
 }

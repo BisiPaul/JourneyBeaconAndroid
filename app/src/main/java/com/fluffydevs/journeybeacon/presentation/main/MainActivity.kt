@@ -11,6 +11,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.fluffydevs.journeybeacon.App
 import com.fluffydevs.journeybeacon.R
 import com.fluffydevs.journeybeacon.common.managers.BluetoothManager
 import com.fluffydevs.journeybeacon.common.managers.PermissionsManager
@@ -23,6 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.altbeacon.beacon.BeaconManager
 import org.altbeacon.beacon.MonitorNotifier
 import org.altbeacon.beacon.Region
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), MonitorNotifier {
@@ -137,6 +139,9 @@ class MainActivity : AppCompatActivity(), MonitorNotifier {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             permissionsManager.requestPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            permissionsManager.requestPermission(Manifest.permission.BLUETOOTH_SCAN)
+        }
     }
 
     fun verifyBluetooth() {
@@ -152,14 +157,28 @@ class MainActivity : AppCompatActivity(), MonitorNotifier {
     }
 
     override fun didEnterRegion(region: Region?) {
-        // TODO @Paul
+        runOnUiThread {
+            if ((application as App).handleInsideRegion() == true) {
+                viewModel.onRegionEnter()
+            }
+            Timber.d("HAS ENTERED REGIONNNNNNNNNN ${region?.bluetoothAddress}")
+            Timber.d("region $region")
+        }
     }
 
     override fun didExitRegion(region: Region?) {
-        // TODO @Paul
+        runOnUiThread {
+            if ((application as App).handleInsideRegion() == false) {
+                viewModel.onRegionExit()
+            }
+            Timber.d("HAS EXITED REGIONNNNNNNNNN")
+            Timber.d("region $region")
+        }
     }
 
     override fun didDetermineStateForRegion(state: Int, region: Region?) {
         // TODO @Paul
+        Timber.d("HAS DETERMINED STATE FOR REGIONNNNNNNNNN, STATE: $state")
+        Timber.d("region $region")
     }
 }

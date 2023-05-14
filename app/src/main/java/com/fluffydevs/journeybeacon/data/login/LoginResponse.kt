@@ -1,4 +1,5 @@
 package com.fluffydevs.journeybeacon.data.login
 
-class LoginResponse {
-}
+data class LoginResponse(
+    val message: String
+)
